@@ -15,6 +15,9 @@ contract ZombieFactory {
 
     Zombie[] public zombies;
 
+    mapping public zombieToOwner(uint => address);
+    mapping ownerZombieCount(address => uint);
+
     // Internal function to create the Zombie
     function _createZombie(string _name, uint _dna) private {
         uint id = zombies.push(Zombie(_name, _dna)) - 1;
