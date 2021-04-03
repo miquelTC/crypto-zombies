@@ -15,12 +15,14 @@ contract ZombieFactory {
 
     Zombie[] public zombies;
 
-    mapping public zombieToOwner(uint => address);
-    mapping ownerZombieCount(address => uint);
+    mapping (uint => address) public zombieToOwner;
+    mapping (address => uint) ownerZombieCount;
 
     // Internal function to create the Zombie
     function _createZombie(string _name, uint _dna) private {
         uint id = zombies.push(Zombie(_name, _dna)) - 1;
+        zombieToOwner[id] = msg.sender;
+        ownerZombieCount[msg.sender] ++;
         emit NewZombie(id, _name, _dna);
     }
 
@@ -32,6 +34,7 @@ contract ZombieFactory {
 
     // Public function to create the Zombie
     function createRandomZombie(string _name) public {
+        require(ownerZombieCount[msg.sender] == 0);
         uint randDna = _generateRandomDna(_name);
         _createZombie(_name, randDna);
     }
