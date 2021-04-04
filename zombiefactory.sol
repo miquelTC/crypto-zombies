@@ -1,6 +1,7 @@
 pragma solidity ^0.4.25;
 
 contract ZombieFactory {
+    
     // Events
     event NewZombie(uint zombieId, string name, uint dna);
 
@@ -11,6 +12,8 @@ contract ZombieFactory {
     struct Zombie {
         string name;
         uint dna;
+        uint32 level;
+        uint32 readyTime;
     }
 
     Zombie[] public zombies;
@@ -20,7 +23,7 @@ contract ZombieFactory {
 
     // Internal function to create the Zombie
     function _createZombie(string _name, uint _dna) internal {
-        uint id = zombies.push(Zombie(_name, _dna)) - 1;
+        uint id = zombies.push(Zombie(_name, _dna, 1, uint32(now + cooldownTime))) - 1;
         zombieToOwner[id] = msg.sender;
         ownerZombieCount[msg.sender] ++;
         emit NewZombie(id, _name, _dna);
