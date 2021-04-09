@@ -5,6 +5,8 @@ import "./erc721.sol";
 
 contract ZombieOwnership is ZombieAttack, ERC721 {
 
+    mapping (uint => address) zombieApprovals;
+    
     function balanceOf(address _owner) external view returns (uint256) {
         return ownerZombieCount[_owner];
     }
