@@ -17,7 +17,7 @@ contract('ZombieFactory', ([deployer]) => {
 
         describe('create zombie', () => {
             beforeEach(async () => {
-                let result = await zombiefactory.createRandomZombie('testName', { from: deployer });
+                result = await zombiefactory.createRandomZombie('testName', { from: deployer });
             })
             
             it('tracks the name', async() => {                
@@ -36,7 +36,13 @@ contract('ZombieFactory', ([deployer]) => {
                 const event = log.args;
                 event.zombieId.toString().should.equal("0");
                 event.name.should.equal(name);
-            })  
+            })
+
+            it('tracks the zombie-owner mapping', async() => {                
+                let mapping = await zombiefactory.zombieToOwner(0);
+                mapping.should.equal(deployer);
+            })            
         })
     })
+
 })
