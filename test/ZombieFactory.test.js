@@ -1,3 +1,7 @@
+const {
+    EVM_REVERT
+} = require('./helpers');
+
 const ZombieFactory = artifacts.require('./ZombieFactory');
 
 require('chai')
@@ -42,6 +46,13 @@ contract('ZombieFactory', ([deployer]) => {
                 let mapping = await zombiefactory.zombieToOwner(0);
                 mapping.should.equal(deployer);
             })            
+        })
+
+        describe('failure', () => {
+            it('rejects creation of more than 1 zombie', async() => {
+                await zombiefactory.createRandomZombie('testName', { from: deployer });
+                await zombiefactory.createRandomZombie('testName2', { from: deployer }).should.be.rejectedWith(EVM_REVERT);
+            })
         })
     })
 
