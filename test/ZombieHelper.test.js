@@ -8,7 +8,7 @@ require('chai')
     .use(require('chai-as-promised'))
     .should()
 
-contract('ZombieFeeding', ([deployer]) => {
+contract('ZombieHelper', ([deployer, user1]) => {
     let zombiehelper;
     let zombie;
 
@@ -32,6 +32,48 @@ contract('ZombieFeeding', ([deployer]) => {
             const level = zombie.level.toString();
             level.should.equal("2");
         })
+
+        it('level up failing if not paying fees', async () => {
+            const fee = await zombiehelper.levelUpFee();
+            await zombiehelper.levelUp(0, { from: deployer, value: fee-10} ).should.be.rejectedWith(EVM_REVERT);
+        })
+    })
+
+    describe('withdraws', () => {
+        beforeEach(async () => {
+            const fee = await zombiehelper.levelUpFee();
+            await zombiehelper.levelUp(0, { from: deployer, value: fee} );
+        })
+        
+        it('owner withdrawing fees', async () => {
+            await zombiehelper.withdraw({ from: deployer });
+            let contractBalance = await web3.eth.getBalance(zombiehelper.address);
+            contractBalance.toString().should.equal("0");
+        })
+
+        it('failure when someone else withdraws fees', async () => {
+            await zombiehelper.withdraw({ from: user1 }).should.be.rejectedWith(EVM_REVERT);                     
+        })
+    })
+
+    describe ('change name of a zombie', () => {
+        it('owner changes the name', async () => {
+            const fee = await zombiehelper.levelUpFee();
+            await zombiehelper.levelUp(0, { from: deployer, value: fee} );
+            await zombiehelper.changeName(0, "newName", { from: deployer });
+            zombie = await zombiehelper.zombies(0);
+            zombie.name.should.equal("newName");
+        })
+
+        it('failure when someone else changes name', async () => {
+            const fee = await zombiehelper.levelUpFee();
+            await zombiehelper.levelUp(0, { from: deployer, value: fee} );
+            await zombiehelper.changeName(0, "newName", { from: user1 }).should.be.rejectedWith(EVM_REVERT);           
+        })
+
+        it('failure when below level 2', async () => {
+            await zombiehelper.changeName(0, "newName", { from: deployer }).should.be.rejectedWith(EVM_REVERT);           
+        })        
     })
 
 })
