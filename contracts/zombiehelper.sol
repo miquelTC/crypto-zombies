@@ -4,7 +4,7 @@ import "./zombiefeeding.sol";
 
 contract ZombieHelper is ZombieFeeding {
 
-    uint levelUpFee = 0.001 ether;
+    uint public levelUpFee = 0.001 ether;
     
     // Modifier to make sure the zombie has enough level to perform an action
     modifier aboveLevel(uint _level, uint _zombieId) {
