@@ -7,6 +7,11 @@ contract ZombieAttack is ZombieHelper {
     // Variables
     uint randNonce = 0;
     uint attackVictoryProbability = 70;
+
+    // function for owner to set the attack probability
+    function setAttackVictoryProbability(uint _probability) external onlyOwner {
+        attackVictoryProbability = _probability;
+    }
     
     // Function which represents our source of randomness
     function randMod(uint _modulus) internal returns(uint) {
