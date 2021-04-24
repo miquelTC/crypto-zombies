@@ -104,4 +104,12 @@ contract('ZombieHelper', ([deployer, user1]) => {
         })
     })
 
+    describe('get zombies of a particular owner', () => {
+        it('get zombies from deployer', async () =>{
+            await zombiehelper.createRandomZombie('testName2', { from: user1} );
+            const result = await zombiehelper.getZombiesByOwner(deployer);
+            result.toString().should.equal('0');
+        })
+    })
+
 })
