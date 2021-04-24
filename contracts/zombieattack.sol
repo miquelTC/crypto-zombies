@@ -8,6 +8,11 @@ contract ZombieAttack is ZombieHelper {
     uint randNonce = 0;
     uint attackVictoryProbability = 70;
 
+    // function for owner to set the cooldown time
+    function setCooldownTime(uint _cooldownTime) external onlyOwner {
+        cooldownTime = _cooldownTime;
+    }
+
     // function for owner to set the attack probability
     function setAttackVictoryProbability(uint _probability) external onlyOwner {
         attackVictoryProbability = _probability;
